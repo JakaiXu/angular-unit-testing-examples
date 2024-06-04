@@ -1,0 +1,9 @@
+trigger:
+- main
+
+stages:
+- stage: main
+  jobs:
+  
+
+
