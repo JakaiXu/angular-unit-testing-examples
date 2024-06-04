@@ -1,9 +1,14 @@
 trigger:
-- main
-
-stages:
-- stage: main
-  jobs:
-  
-
-
+- master
+pool:
+  vmImage: ubuntu-latest
+steps:
+- script: git clone https://github.com/JakaiXu/angular-unit-testing-examples.git
+  workingDirectory: $(cd /angular-unit-testing-examples)
+  displayName: "Clone code"
+- script: ng lint
+  displayName: check code quality
+- script: ng test
+  displayName: test code
+- script: ng build
+  displayName: compile code
