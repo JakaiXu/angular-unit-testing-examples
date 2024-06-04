@@ -4,11 +4,21 @@ pool:
   vmImage: ubuntu-latest
 steps:
 - script: git clone https://github.com/JakaiXu/angular-unit-testing-examples.git
-  workingDirectory: $(cd /angular-unit-testing-examples)
+  workingDirectory: $(Build.SourcesDirectory)
   displayName: "Clone code"
+- script: npm install -g @angular/cli
+  displayName: 'Install Angular CLI'
 - script: ng lint
+  workingDirectory: $(Build.SourcesDirectory)/angular-unit-testing-examples
   displayName: check code quality
 - script: ng test
   displayName: test code
 - script: ng build
   displayName: compile code
+- script: docker login -u $(Dockerusername) -p $(DockerPassword) myregistry.azurecr.io
+  displayName: "Login to Docker registry"
+- script: |
+    docker build -t myregistry.azurecr.io/myapp:$(Build.BuildId) .
+    docker push myregistry.azurecr.io/myapp:$(Build.BuildId)
+  workingDirectory: $(Build.SourcesDirectory)/angular-unit-testing-examples
+  displayName: 'Build and Push Docker Image'
